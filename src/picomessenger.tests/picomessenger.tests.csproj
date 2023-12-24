@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\tinymessenger\tinymessenger.csproj" />
+    <ProjectReference Include="..\picomessenger\picomessenger.csproj" />
   </ItemGroup>
 
 </Project>

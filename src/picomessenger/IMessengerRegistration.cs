@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace tinymessenger
+namespace picomessenger
 {
     public interface IMessengerRegistration
     {

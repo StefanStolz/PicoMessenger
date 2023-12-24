@@ -1,7 +1,7 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace tinymessenger.tests
+namespace picomessenger.tests
 {
     [TestFixture]
     public class RegisterTests
@@ -9,7 +9,7 @@ namespace tinymessenger.tests
         [Test]
         public void RegisterSimpleReceiver()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
@@ -21,7 +21,7 @@ namespace tinymessenger.tests
         [Test]
         public void SendMessageToReceiver()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
@@ -37,7 +37,7 @@ namespace tinymessenger.tests
         [Test]
         public async Task SendMessageAsynyToReceiver()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
@@ -53,7 +53,7 @@ namespace tinymessenger.tests
         [Test]
         public void NothingReceivedAfterDeregisterReceiver()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
@@ -70,7 +70,7 @@ namespace tinymessenger.tests
         [Test]
         public async Task NothingReceivedAfterDeregisterAsyncReceiver()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
@@ -87,7 +87,7 @@ namespace tinymessenger.tests
         [Test]
         public void ThrowsException()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
@@ -103,7 +103,7 @@ namespace tinymessenger.tests
         [Test]
         public async Task DisableReceierAfterException()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
@@ -122,7 +122,7 @@ namespace tinymessenger.tests
         [Test]
         public async Task RegisterAll()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 
@@ -139,7 +139,7 @@ namespace tinymessenger.tests
         [Test]
         public void DeregisterAll()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 
@@ -152,7 +152,7 @@ namespace tinymessenger.tests
         [Test]
         public void DeregisterOneReceive()
         {
-            var sut = new TinyMessenger();
+            var sut = new PicoMessenger();
 
             var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 

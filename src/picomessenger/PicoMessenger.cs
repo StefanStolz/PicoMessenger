@@ -2,9 +2,9 @@
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 
-namespace tinymessenger
+namespace picomessenger
 {
-    public class TinyMessenger : IMessenger
+    public class PicoMessenger : IMessenger
     {
         private ImmutableArray<ReceiverBase> receivers = ImmutableArray.Create<ReceiverBase>();
 

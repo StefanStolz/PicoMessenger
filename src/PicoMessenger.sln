@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "picomessenger", "picomessenger\picomessenger.csproj", "{9B423358-5279-4FD2-8A08-5649C87C9ED7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "picomessenger.tests", "picomessenger.tests\picomessenger.tests.csproj", "{5C9C22A6-D459-4E77-AD43-C7777C87BF37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B423358-5279-4FD2-8A08-5649C87C9ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B423358-5279-4FD2-8A08-5649C87C9ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B423358-5279-4FD2-8A08-5649C87C9ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B423358-5279-4FD2-8A08-5649C87C9ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C9C22A6-D459-4E77-AD43-C7777C87BF37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9C22A6-D459-4E77-AD43-C7777C87BF37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9C22A6-D459-4E77-AD43-C7777C87BF37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9C22A6-D459-4E77-AD43-C7777C87BF37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93A6BA0D-EBE9-4E2B-98B2-CFADCC366A54}
+	EndGlobalSection
+EndGlobal

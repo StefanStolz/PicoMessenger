@@ -1,4 +1,4 @@
-﻿namespace tinymessenger
+﻿namespace picomessenger
 {
     public interface IReceiver
     {
