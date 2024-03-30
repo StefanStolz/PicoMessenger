@@ -11,20 +11,16 @@ namespace picomessenger
         public int NumberOfRegisteredReceivers => this.receivers.Length;
 
 
-        public IMessengerRegistration Register<T>(IReceiver<T> receiver)
+        public void Register<T>(IReceiver<T> receiver)
         {
             Receiver<T> receiveHandler = new Receiver<T>(receiver);
             this.receivers = this.receivers.Add(receiveHandler);
-
-            return receiveHandler;
         }
 
-        public IMessengerRegistration Register<T>(IAsyncReceiver<T> receiver)
+        public void Register<T>(IAsyncReceiver<T> receiver)
         {
             AsyncReceiver<T> receiveHandler = new AsyncReceiver<T>(receiver);
             this.receivers = this.receivers.Add(receiveHandler);
-
-            return receiveHandler;
         }
 
 
@@ -49,17 +45,17 @@ namespace picomessenger
                         Type[] genericArguments = ifc.GetGenericArguments();
                         Type t = typeof(AsyncReceiver<>).MakeGenericType(genericArguments);
 
-                        ReceiverBase recv = (ReceiverBase) Activator.CreateInstance(t, receiver);
+                        var receiverInstance = (ReceiverBase) Activator.CreateInstance(t, receiver);
 
-                        this.receivers = this.receivers.Add(recv);
+                        this.receivers = this.receivers.Add(receiverInstance);
                     }
                     else if (ifc.GetGenericTypeDefinition() == typeof(IReceiver<>))
                     {
                         Type t = typeof(Receiver<>).MakeGenericType(ifc.GetGenericArguments());
 
-                        ReceiverBase recv = (ReceiverBase) Activator.CreateInstance(t, receiver);
+                        var receiverInstance = (ReceiverBase) Activator.CreateInstance(t, receiver);
 
-                        this.receivers = this.receivers.Add(recv);
+                        this.receivers = this.receivers.Add(receiverInstance);
                     }
                 }
             }
@@ -69,23 +65,11 @@ namespace picomessenger
             this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.Item, receiver));
 
 
-        public async void Send<T>(T message) => await this.SendAsync(message);
-
-        public async Task SendAsync<T>(T message)
+        public async Task SendMessageAsync<T>(T message)
         {
             foreach (ReceiverBase<T> receiver in this.receivers.OfType<ReceiverBase<T>>())
             {
-                try
-                {
-                    await receiver.ReceiveAsync(message);
-                }
-                catch (Exception exception)
-                {
-                    if (!await receiver.ExceptionOcurredAsync(exception))
-                    {
-                        throw;
-                    }
-                }
+                await receiver.ReceiveAsync(message);
             }
         }
 
@@ -94,57 +78,15 @@ namespace picomessenger
             public abstract IReceiver Item { get; }
         }
 
-        private abstract class ReceiverBase<T> : ReceiverBase, IMessengerRegistration
+        private abstract class ReceiverBase<T> : ReceiverBase
         {
-            private bool disabled;
-            private Func<Exception, Task<MessengerErrorPolicy>> errorHandler;
-
-            public void SetErrorHandler(Func<Exception, Task<MessengerErrorPolicy>> handler) =>
-                this.errorHandler = handler ?? throw new ArgumentNullException(nameof(handler));
-
-            public MessengerErrorPolicy ErrorPolicy { get; set; }
-
             public Task ReceiveAsync(T message)
             {
-                if (this.disabled)
-                {
-                    return Task.CompletedTask;
-                }
-
                 return this.SendMessageAsync(message);
             }
 
 
             protected abstract Task SendMessageAsync(T message);
-
-
-            /// <summary>
-            /// </summary>
-            /// <param name="exception"></param>
-            /// <returns><c>true</c> if handled; otherwise <c>false</c></returns>
-            /// <exception cref="NotImplementedException"></exception>
-            public async Task<bool> ExceptionOcurredAsync(Exception exception)
-            {
-                MessengerErrorPolicy policy = this.ErrorPolicy;
-
-                if (this.errorHandler != null)
-                {
-                    policy = await this.errorHandler(exception);
-                }
-
-                switch (policy)
-                {
-                    case MessengerErrorPolicy.Throw:
-                        return false;
-                    case MessengerErrorPolicy.DisableReceiver:
-                        this.disabled = true;
-                        return true;
-                    case MessengerErrorPolicy.Ignore:
-                        return true;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
         }
 
         private sealed class Receiver<T> : ReceiverBase<T>
@@ -178,10 +120,5 @@ namespace picomessenger
 
             protected override Task SendMessageAsync(T message) => this.receiver.ReceiveAsync(message);
         }
-    }
-
-    public interface IReceiver<T> : IReceiver
-    {
-        void Receive(T message);
     }
 }
