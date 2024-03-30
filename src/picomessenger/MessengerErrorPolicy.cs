@@ -1,6 +1,6 @@
 ﻿namespace picomessenger
 {
-    public enum MesengerErrorPolicy
+    public enum MessengerErrorPolicy
     {
         Throw,
         DisableReceiver,

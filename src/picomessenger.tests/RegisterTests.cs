@@ -93,7 +93,7 @@ namespace picomessenger.tests
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
             var config = sut.Register(receiverMock);
-            config.ErrorPolicy = MesengerErrorPolicy.Throw;
+            config.ErrorPolicy = MessengerErrorPolicy.Throw;
 
             var message = new object();
 
@@ -109,7 +109,7 @@ namespace picomessenger.tests
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
             var config = sut.Register(receiverMock);
-            config.ErrorPolicy = MesengerErrorPolicy.DisableReceiver;
+            config.ErrorPolicy = MessengerErrorPolicy.DisableReceiver;
 
             var message = new object();
 

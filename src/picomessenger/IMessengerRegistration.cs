@@ -5,7 +5,7 @@ namespace picomessenger
 {
     public interface IMessengerRegistration
     {
-        MesengerErrorPolicy ErrorPolicy { get; set; }
-        void SetErrorHandler(Func<Exception, Task<MesengerErrorPolicy>> handler);
+        MessengerErrorPolicy ErrorPolicy { get; set; }
+        void SetErrorHandler(Func<Exception, Task<MessengerErrorPolicy>> handler);
     }
 }

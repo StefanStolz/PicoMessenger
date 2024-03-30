@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "picomessenger", "picomessen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "picomessenger.tests", "picomessenger.tests\picomessenger.tests.csproj", "{5C9C22A6-D459-4E77-AD43-C7777C87BF37}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E851ADE-EF2A-4171-A008-4F83BA5A3A65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

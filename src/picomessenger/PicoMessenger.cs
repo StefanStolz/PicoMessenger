@@ -97,12 +97,12 @@ namespace picomessenger
         private abstract class ReceiverBase<T> : ReceiverBase, IMessengerRegistration
         {
             private bool disabled;
-            private Func<Exception, Task<MesengerErrorPolicy>> errorHandler;
+            private Func<Exception, Task<MessengerErrorPolicy>> errorHandler;
 
-            public void SetErrorHandler(Func<Exception, Task<MesengerErrorPolicy>> handler) =>
+            public void SetErrorHandler(Func<Exception, Task<MessengerErrorPolicy>> handler) =>
                 this.errorHandler = handler ?? throw new ArgumentNullException(nameof(handler));
 
-            public MesengerErrorPolicy ErrorPolicy { get; set; }
+            public MessengerErrorPolicy ErrorPolicy { get; set; }
 
             public Task ReceiveAsync(T message)
             {
@@ -125,7 +125,7 @@ namespace picomessenger
             /// <exception cref="NotImplementedException"></exception>
             public async Task<bool> ExceptionOcurredAsync(Exception exception)
             {
-                MesengerErrorPolicy policy = this.ErrorPolicy;
+                MessengerErrorPolicy policy = this.ErrorPolicy;
 
                 if (this.errorHandler != null)
                 {
@@ -134,12 +134,12 @@ namespace picomessenger
 
                 switch (policy)
                 {
-                    case MesengerErrorPolicy.Throw:
+                    case MessengerErrorPolicy.Throw:
                         return false;
-                    case MesengerErrorPolicy.DisableReceiver:
+                    case MessengerErrorPolicy.DisableReceiver:
                         this.disabled = true;
                         return true;
-                    case MesengerErrorPolicy.Ignore:
+                    case MessengerErrorPolicy.Ignore:
                         return true;
                     default:
                         throw new ArgumentOutOfRangeException();
