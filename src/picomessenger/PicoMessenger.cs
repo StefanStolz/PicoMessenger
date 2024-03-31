@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
+using picomessenger.wrapper;
 
 namespace picomessenger
 {
@@ -8,8 +10,18 @@ namespace picomessenger
     {
         private ImmutableArray<IWrappedReceiver> receivers = ImmutableArray.Create<IWrappedReceiver>();
 
-        private IReceiverWrapperFactory wrapperFactory = new DefaultReceiverWrapperFactory();
-        
+        private readonly IReceiverWrapperFactory wrapperFactory;
+
+        public PicoMessenger(IReceiverWrapperFactory receiverWrapperFactory)
+        {
+            this.wrapperFactory = receiverWrapperFactory;
+        }
+
+        public PicoMessenger()
+            : this(new DefaultReceiverWrapperFactory())
+        {
+        }
+
         public int NumberOfRegisteredReceivers => this.receivers.Length;
 
         public void Register<T>(IReceiver<T> receiver)
@@ -62,18 +74,12 @@ namespace picomessenger
             this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver));
         }
 
-
         public async Task SendMessageAsync<T>(T message)
         {
-            foreach (ReceiverBase<T> receiver in this.receivers.OfType<ReceiverBase<T>>())
-            {
-                await receiver.ReceiveAsync(message);
-            }
+            await Task.WhenAll(
+                this.receivers.Where(r => r.IsAlive)
+                    .OfType<IWrappedReceiver<T>>()
+                    .Select(r => r.ReceiveAsync(message)));
         }
-
-
-
-
-
     }
 }

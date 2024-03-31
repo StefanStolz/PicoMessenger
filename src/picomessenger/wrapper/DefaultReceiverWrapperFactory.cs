@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace picomessenger
+namespace picomessenger.wrapper
 {
     public class DefaultReceiverWrapperFactory : IReceiverWrapperFactory
     {
@@ -12,37 +12,35 @@ namespace picomessenger
                 if (receiverInterfaceType.GetGenericTypeDefinition() == typeof(IAsyncReceiver<>))
                 {
                     Type[] genericArguments = receiverInterfaceType.GetGenericArguments();
-                    Type t = typeof(AsyncReceiver<>).MakeGenericType(genericArguments);
+                    Type t = typeof(AsyncWrappedReceiver<>).MakeGenericType(genericArguments);
 
-                    var wrappedReceiver = (IWrappedReceiver) Activator.CreateInstance(t, receiver);
-
-                    return wrappedReceiver;
+                    return (IWrappedReceiver) Activator.CreateInstance(t, receiver);
                 }
 
                 if (receiverInterfaceType.GetGenericTypeDefinition() == typeof(IReceiver<>))
                 {
-                    Type t = typeof(Receiver<>).MakeGenericType(receiverInterfaceType.GetGenericArguments());
+                    Type[] genericArguments = receiverInterfaceType.GetGenericArguments();
+                    Type t = typeof(WrappedReceiver<>).MakeGenericType(genericArguments);
 
-                    var wrappedReceiver = (IWrappedReceiver) Activator.CreateInstance(t, receiver);
-
-                    return wrappedReceiver;
+                    return (IWrappedReceiver) Activator.CreateInstance(t, receiver);
                 }
             }
 
             throw new ArgumentException("Could not wrap Receiver");
-
         }
-        
-        private sealed class Receiver<T> : ReceiverBase<T>
+
+        private sealed class WrappedReceiver<T> : WrappedReceiverBase<T>
         {
             private readonly IReceiver<T> receiver;
 
-            public Receiver(IReceiver<T> receiver)
+            public WrappedReceiver(IReceiver<T> receiver)
             {
                 this.receiver = receiver;
             }
 
             public override IReceiver WrappedObject => this.receiver;
+
+            public override bool IsAlive { get; } = true;
 
             protected override Task SendMessageAsync(T message)
             {
@@ -51,16 +49,17 @@ namespace picomessenger
             }
         }
 
-        private sealed class AsyncReceiver<T> : ReceiverBase<T>
+        private sealed class AsyncWrappedReceiver<T> : WrappedReceiverBase<T>
         {
             private readonly IAsyncReceiver<T> receiver;
 
-            public AsyncReceiver(IAsyncReceiver<T> receiver)
+            public AsyncWrappedReceiver(IAsyncReceiver<T> receiver)
             {
                 this.receiver = receiver;
             }
 
             public override IReceiver WrappedObject => this.receiver;
+            public override bool IsAlive { get; } = true;
 
             protected override Task SendMessageAsync(T message) => this.receiver.ReceiveAsync(message);
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace picomessenger
+namespace picomessenger.wrapper
 {
-    public abstract class ReceiverBase<T> : IWrappedReceiver
+    public abstract class WrappedReceiverBase<T> : IWrappedReceiver<T>
     {
         public Task ReceiveAsync(T message)
         {
@@ -14,6 +14,8 @@ namespace picomessenger
         protected abstract Task SendMessageAsync(T message);
 
         public abstract IReceiver WrappedObject { get; }
+
+        public abstract bool IsAlive { get; }
 
         public Type MessageType { get; } = typeof(T);
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace picomessenger
+namespace picomessenger.wrapper
 {
     public interface IReceiverWrapperFactory
     {

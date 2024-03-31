@@ -1,4 +1,5 @@
 ﻿using NSubstitute.ExceptionExtensions;
+using picomessenger.wrapper;
 
 namespace picomessenger.tests
 {
@@ -34,7 +35,7 @@ namespace picomessenger.tests
         }
 
         [Test]
-        public async Task SendMessageAsynyToReceiver()
+        public async Task SendMessageAsyncToReceiver()
         {
             var sut = new PicoMessenger();
 
@@ -98,24 +99,23 @@ namespace picomessenger.tests
             Assert.ThrowsAsync<Exception>(async () => await sut.SendMessageAsync(message));
         }
 
-        // [Test]
-        // public async Task DisableReceierAfterException()
-        // {
-        //     var sut = new PicoMessenger();
-        //
-        //     var receiverMock = Substitute.For<IAsyncReceiver<object>>();
-        //     receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
-        //
-        //     var config = sut.Register(receiverMock);
-        //     config.ErrorPolicy = MessengerErrorPolicy.DisableReceiver;
-        //
-        //     var message = new object();
-        //
-        //     await sut.SendAsync(message);
-        //     await sut.SendAsync(message);
-        //
-        //     await receiverMock.Received(1).ReceiveAsync(message);
-        // }
+        [Test]
+        public async Task DisableReceiverAfterException()
+        {
+            var sut = new PicoMessenger(new DisableReceiverOnErrorWrapperFactory());
+        
+            var receiverMock = Substitute.For<IAsyncReceiver<object>>();
+            receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
+            
+            sut.Register(receiverMock);
+        
+            var message = new object();
+        
+            await sut.SendMessageAsync(message);
+            await sut.SendMessageAsync(message);
+        
+            await receiverMock.Received(1).ReceiveAsync(message);
+        }
 
         [Test]
         public async Task RegisterAll()
