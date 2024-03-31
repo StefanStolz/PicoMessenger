@@ -5,6 +5,7 @@ namespace picomessenger.tests
     [TestFixture]
     public class ExplorationTests
     {
+        // ReSharper disable once MemberCanBePrivate.Global
         public interface ISome
         {
             Task ExecuteAsync();
@@ -21,7 +22,7 @@ namespace picomessenger.tests
 
             Assert.ThrowsAsync<Exception>(async () =>
             {
-                await Task.WhenAll(new ISome[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
+                await Task.WhenAll(new[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
             });
 
             await fake1.Received(1).ExecuteAsync();
@@ -42,14 +43,14 @@ namespace picomessenger.tests
 
             Assert.ThrowsAsync<Exception>(async () =>
             {
-                await Task.WhenAll(new ISome[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
+                await Task.WhenAll(new[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
             });
 
 
             await fake1.Received(1).ExecuteAsync();
             await fake3.DidNotReceive().ExecuteAsync();
         }
-        
+
         [Test]
         public async Task WhenAllWithAsyncException()
         {
@@ -61,12 +62,38 @@ namespace picomessenger.tests
 
             Assert.ThrowsAsync<Exception>(async () =>
             {
-                await Task.WhenAll(new ISome[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
+                await Task.WhenAll(new[] {fake1, fake2, fake3}.Select(f => f.ExecuteAsync()));
             });
-
 
             await fake1.Received(1).ExecuteAsync();
             await fake3.Received(1).ExecuteAsync();
         }
+
+
+        // [Test]
+        // [CancelAfter(10_000)]
+        // public void CollectTargetOfWeakReference(CancellationToken cancellationToken)
+        // {
+        //     var reference = new FakeSome();
+        //
+        //     var wr = new WeakReference<ISome>(reference);
+        //
+        //     reference = null;
+        //
+        //     while (wr.TryGetTarget(out _))
+        //     {
+        //         GC.AddMemoryPressure(100_000_000);
+        //         GC.Collect();
+        //         GC.WaitForPendingFinalizers();
+        //         GC.WaitForFullGCComplete();
+        //         Thread.Sleep(100);
+        //         cancellationToken.ThrowIfCancellationRequested();
+        //     }
+        // }
+        //
+        // public class FakeSome : ISome
+        // {
+        //     public Task ExecuteAsync() => Task.CompletedTask;
+        // }
     }
 }

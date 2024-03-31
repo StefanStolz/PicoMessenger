@@ -16,5 +16,4 @@ namespace picomessenger.wrapper
     {
         Task ReceiveAsync(T message);
     }
-        
 }

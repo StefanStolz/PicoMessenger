@@ -148,7 +148,7 @@ namespace picomessenger.tests
         }
 
         [Test]
-        public void DeregisterOneReceive()
+        public void DeregisterOneReceiver()
         {
             var sut = new PicoMessenger();
 
