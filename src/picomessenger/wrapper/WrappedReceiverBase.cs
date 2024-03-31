@@ -7,9 +7,15 @@ namespace picomessenger.wrapper
     {
         public Task ReceiveAsync(T message)
         {
-            return this.SendMessageAsync(message);
+            try
+            {
+                return this.SendMessageAsync(message);
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
         }
-
 
         protected abstract Task SendMessageAsync(T message);
 
