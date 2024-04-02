@@ -19,10 +19,10 @@ namespace picomessenger
 
         public PicoMessenger()
             : this(new DefaultReceiverWrapperFactory())
-        {
-        }
+        { }
 
         public int NumberOfRegisteredReceivers => this.receivers.Length;
+        
 
         public void Register<T>(IReceiver<T> receiver)
         {
