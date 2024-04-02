@@ -69,6 +69,15 @@ namespace picomessenger.tests
             await fake3.Received(1).ExecuteAsync();
         }
 
+        [Test]
+        public async Task WhenAllWithMultipleFaultedExceptions()
+        {
+            var t1 = Task.FromException(new ArgumentException());
+            var t2 = Task.FromException(new InvalidOperationException());
+
+            // Why not an AggregateException?
+            Assert.ThrowsAsync<ArgumentException>(async () => { await Task.WhenAll(new Task[] {t1, t2}); });
+        }
 
         // [Test]
         // [CancelAfter(10_000)]

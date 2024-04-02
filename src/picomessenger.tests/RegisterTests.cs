@@ -127,7 +127,7 @@ namespace picomessenger.tests
             sut.RegisterAll(receiverMock);
 
             await sut.SendMessageAsync(new object());
-            await sut.SendMessageAsync("Shibby");
+            await sut.SendMessageAsync("Text");
 
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(2));
             await receiverMock.Received(1).ReceiveAsync(Arg.Any<object>());
