@@ -9,7 +9,7 @@ namespace picomessenger.tests
         [Test]
         public void MessagesAreSentToAllReceiversEvenTheresAnError()
         {
-            var sut = new PicoMessenger(new DefaultReceiverWrapperFactory());
+            var sut = new PicoMessenger(new SimpleReceiverWrapperFactory());
 
             var receiver1 = Substitute.For<IReceiver<string>>();
             var receiver2 = Substitute.For<IAsyncReceiver<string>>();
@@ -33,7 +33,7 @@ namespace picomessenger.tests
         [Test]
         public void ExceptionIfMultipleErrors()
         {
-            var sut = new PicoMessenger(new DefaultReceiverWrapperFactory());
+            var sut = new PicoMessenger(new SimpleReceiverWrapperFactory());
 
             var receiver1 = Substitute.For<IReceiver<string>>();
             var receiver2 = Substitute.For<IAsyncReceiver<string>>();

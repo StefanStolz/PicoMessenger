@@ -103,17 +103,17 @@ namespace picomessenger.tests
         public async Task DisableReceiverAfterException()
         {
             var sut = new PicoMessenger(new DisableReceiverOnErrorWrapperFactory());
-        
+
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
-            
+
             sut.Register(receiverMock);
-        
+
             var message = new object();
-        
+
             await sut.SendMessageAsync(message);
             await sut.SendMessageAsync(message);
-        
+
             await receiverMock.Received(1).ReceiveAsync(message);
         }
 
@@ -161,17 +161,61 @@ namespace picomessenger.tests
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(1));
         }
 
+
+        [Test]
+        public void RegisterAsyncReceiverWithCustomWrapperFactory()
+        {
+            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            var sut = new PicoMessenger(defaultWrapperFactory);
+
+            var receiver = Substitute.For<IAsyncReceiver<string>>();
+
+            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+
+            sut.Register(receiver, customWrapperFactory);
+
+            defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
+            customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
+        }
+
+        [Test]
+        public void RegisterReceiverWithCustomWrapperFactory()
+        {
+            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            var sut = new PicoMessenger(defaultWrapperFactory);
+
+            var receiver = Substitute.For<IReceiver<string>>();
+
+            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+
+            sut.Register(receiver, customWrapperFactory);
+
+            defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
+            customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
+        }
+
+
+        [Test]
+        public void RegisterallWithCustomWrapperFactory()
+        {
+            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            var sut = new PicoMessenger(defaultWrapperFactory);
+
+            var receiver = new MultiReceiver();
+
+            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+
+            sut.RegisterAll(receiver, customWrapperFactory);
+
+            defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
+            customWrapperFactory.Received(2).CreateWrappedReceiver(receiver, Arg.Any<Type>());
+        }
+
         public class MultiReceiver : IAsyncReceiver<object>, IAsyncReceiver<String>
         {
-            public virtual Task ReceiveAsync(object message)
-            {
-                return Task.CompletedTask;
-            }
+            public virtual Task ReceiveAsync(object message) => Task.CompletedTask;
 
-            public virtual Task ReceiveAsync(string message)
-            {
-                return Task.CompletedTask;
-            }
+            public virtual Task ReceiveAsync(string message) => Task.CompletedTask;
         }
     }
 }

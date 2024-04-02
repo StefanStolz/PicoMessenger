@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using picomessenger.wrapper;
 
 namespace picomessenger
 {
@@ -21,6 +22,23 @@ namespace picomessenger
         /// <typeparam name="T">The Type of the Message to receive</typeparam>
         void Register<T>(IAsyncReceiver<T> receiver);
         
+        
+        /// <summary>
+        /// Registers a specific Message Receiver with a custom <see cref="IReceiverWrapperFactory"/>.
+        /// </summary>
+        /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
+        /// <param name="wrapperFactory">The custom <see cref="IReceiverWrapperFactory"/> to use</param>
+        /// <typeparam name="T">The Type of the Message to receive</typeparam>
+        void Register<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
+        
+        /// <summary>
+        /// Registers a specific Message Receiver with a custom <see cref="IReceiverWrapperFactory"/>.
+        /// </summary>
+        /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
+        /// <param name="wrapperFactory">The custom <see cref="IReceiverWrapperFactory"/> to use</param>
+        /// <typeparam name="T">The Type of the Message to receive</typeparam>
+        void Register<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
+        
         /// <summary>
         /// Unregisters an existing Registration of a specific message of an instance.
         /// </summary>
@@ -40,6 +58,14 @@ namespace picomessenger
         /// </summary>
         /// <param name="receiver">The instance to register</param>
         void RegisterAll(IReceiver receiver);
+
+        /// <summary>
+        /// Registers all implemented <see cref="IReceiver{T}"/> and <see cref="IAsyncReceiver{T}"/>
+        /// with a custom <see cref="IReceiverWrapperFactory"/>
+        /// </summary>
+        /// <param name="receiver">The instance to register</param>
+        /// <param name="wrapperFactory">The <see cref="IReceiverWrapperFactory"/> to use</param>
+        void RegisterAll(IReceiver receiver, IReceiverWrapperFactory wrapperFactory);
        
         /// <summary>
         /// Unregisters all implemented <see cref="IReceiver{T}"/> and <see cref="IAsyncReceiver{T}"/>
