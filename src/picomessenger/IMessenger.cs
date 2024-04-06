@@ -4,9 +4,9 @@ using picomessenger.wrapper;
 namespace picomessenger
 {
     /// <summary>
-    /// <see cref="IMessengerRegistration"/> defines methods to register and deregister Message receivers.
+    /// <see cref="ISubscriberRegistration"/> defines methods to register and deregister Message receivers.
     /// </summary>
-    public interface IMessengerRegistration
+    public interface ISubscriberRegistration
     {
         /// <summary>
         /// Registers a specific Message Receiver.
@@ -77,12 +77,12 @@ namespace picomessenger
     /// <summary>
     /// Defines Methods to send Messages
     /// </summary>
-    public interface IMessageSender
+    public interface IMessagePublisher
     {
         /// <summary>
-        /// Sends a Message to all registered Receivers
+        /// Publishes a Message to all registered Subscribers
         /// </summary>
-        /// <param name="message">The Message to send</param>
+        /// <param name="message">The Message to publish</param>
         /// <typeparam name="T">The Type of the Message</typeparam>
         /// <returns>A Task to await the delivery of the Message to all receivers</returns>
         Task PublishMessageAsync<T>(T message);
@@ -91,7 +91,7 @@ namespace picomessenger
     /// <summary>
     /// Defines Methods of a Messenger
     /// </summary>
-    public interface IMessenger : IMessengerRegistration, IMessageSender
+    public interface IMessenger : ISubscriberRegistration, IMessagePublisher
     {
     }
 }

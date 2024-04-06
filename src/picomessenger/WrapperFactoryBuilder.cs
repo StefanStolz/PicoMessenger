@@ -1,6 +1,4 @@
-﻿using System;
-
-using picomessenger.wrapper;
+﻿using picomessenger.wrapper;
 
 namespace picomessenger
 {
