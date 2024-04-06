@@ -13,7 +13,7 @@ namespace picomessenger.tests
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
-            sut.Register(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
 
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(1));
         }
@@ -25,11 +25,11 @@ namespace picomessenger.tests
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
-            sut.Register(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
 
             var message = new object();
 
-            await sut.SendMessageAsync(message);
+            await sut.PublishMessageAsync(message);
 
             receiverMock.Received(1).Receive(message);
         }
@@ -41,11 +41,11 @@ namespace picomessenger.tests
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
-            sut.Register(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
 
             var message = new object();
 
-            await sut.SendMessageAsync(message);
+            await sut.PublishMessageAsync(message);
 
             await receiverMock.Received(1).ReceiveAsync(message);
         }
@@ -57,12 +57,12 @@ namespace picomessenger.tests
 
             var receiverMock = Substitute.For<IReceiver<object>>();
 
-            sut.Register(receiverMock);
-            sut.Deregister(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
+            sut.UnregisterSubscriber(receiverMock);
 
             var message = new object();
 
-            await sut.SendMessageAsync(message);
+            await sut.PublishMessageAsync(message);
 
             receiverMock.DidNotReceive().Receive(message);
         }
@@ -74,12 +74,12 @@ namespace picomessenger.tests
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
-            sut.Register(receiverMock);
-            sut.Deregister(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
+            sut.UnregisterSubscriber(receiverMock);
 
             var message = new object();
 
-            await sut.SendMessageAsync(message);
+            await sut.PublishMessageAsync(message);
 
             await receiverMock.DidNotReceive().ReceiveAsync(message);
         }
@@ -92,27 +92,27 @@ namespace picomessenger.tests
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
-            sut.Register(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
 
             var message = new object();
 
-            Assert.ThrowsAsync<Exception>(async () => await sut.SendMessageAsync(message));
+            Assert.ThrowsAsync<Exception>(async () => await sut.PublishMessageAsync(message));
         }
 
         [Test]
         public async Task DisableReceiverAfterException()
         {
-            var sut = new PicoMessenger(new DisableReceiverOnErrorWrapperFactory());
+            var sut = new PicoMessenger(new ConfigureableReceiverWrapperFactory(false, true, NullPicoLogger.Instance));
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
-            sut.Register(receiverMock);
+            sut.RegisterSubscriber(receiverMock);
 
             var message = new object();
 
-            await sut.SendMessageAsync(message);
-            await sut.SendMessageAsync(message);
+            await sut.PublishMessageAsync(message);
+            await sut.PublishMessageAsync(message);
 
             await receiverMock.Received(1).ReceiveAsync(message);
         }
@@ -126,8 +126,8 @@ namespace picomessenger.tests
 
             sut.RegisterAll(receiverMock);
 
-            await sut.SendMessageAsync(new object());
-            await sut.SendMessageAsync("Text");
+            await sut.PublishMessageAsync(new object());
+            await sut.PublishMessageAsync("Text");
 
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(2));
             await receiverMock.Received(1).ReceiveAsync(Arg.Any<object>());
@@ -156,7 +156,7 @@ namespace picomessenger.tests
 
             sut.RegisterAll(receiverMock);
 
-            sut.Deregister<String>(receiverMock);
+            sut.UnregisterSubscriber<String>(receiverMock);
 
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(1));
         }
@@ -172,7 +172,7 @@ namespace picomessenger.tests
 
             var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
 
-            sut.Register(receiver, customWrapperFactory);
+            sut.RegisterSubscriber(receiver, customWrapperFactory);
 
             defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
             customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
@@ -188,7 +188,7 @@ namespace picomessenger.tests
 
             var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
 
-            sut.Register(receiver, customWrapperFactory);
+            sut.RegisterSubscriber(receiver, customWrapperFactory);
 
             defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
             customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());

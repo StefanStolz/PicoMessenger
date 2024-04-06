@@ -70,7 +70,7 @@ namespace picomessenger.tests
         }
 
         [Test]
-        public async Task WhenAllWithMultipleFaultedExceptions()
+        public void WhenAllWithMultipleFaultedExceptions()
         {
             var t1 = Task.FromException(new ArgumentException());
             var t2 = Task.FromException(new InvalidOperationException());

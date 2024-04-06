@@ -19,11 +19,11 @@ namespace picomessenger.tests
 #pragma warning restore NS5003
             var receiver3 = Substitute.For<IReceiver<string>>();
 
-            sut.Register(receiver1);
-            sut.Register(receiver2);
-            sut.Register(receiver3);
+            sut.RegisterSubscriber(receiver1);
+            sut.RegisterSubscriber(receiver2);
+            sut.RegisterSubscriber(receiver3);
 
-            Assert.ThrowsAsync<Exception>(async () => { await sut.SendMessageAsync("Text"); });
+            Assert.ThrowsAsync<Exception>(async () => { await sut.PublishMessageAsync("Text"); });
 
             receiver1.Received(1).Receive("Text");
             receiver3.Received(1).Receive("Text");
@@ -42,13 +42,13 @@ namespace picomessenger.tests
             receiver3.ReceiveAsync(Arg.Any<string>()).ThrowsAsync(new InvalidOperationException("not valid"));
             var receiver4 = Substitute.For<IAsyncReceiver<string>>();
             
-            sut.Register(receiver1);
-            sut.Register(receiver2);
-            sut.Register(receiver3);
-            sut.Register(receiver4);
+            sut.RegisterSubscriber(receiver1);
+            sut.RegisterSubscriber(receiver2);
+            sut.RegisterSubscriber(receiver3);
+            sut.RegisterSubscriber(receiver4);
 
             // Why not an AggregateException?
-            var exception = Assert.ThrowsAsync<ArgumentException>(async () => { await sut.SendMessageAsync("Text"); });
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () => { await sut.PublishMessageAsync("Text"); });
             
              Assert.That(exception!.Message, Is.EqualTo("Wrong args"));
 

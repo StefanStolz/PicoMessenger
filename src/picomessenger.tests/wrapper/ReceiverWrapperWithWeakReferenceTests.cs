@@ -3,17 +3,18 @@
 namespace picomessenger.tests.wrapper
 {
     [TestFixture]
-    public class WeakWrapperFactoryTests
+    public class ReceiverWrapperWithWeakReferenceTests
     {
         [Test]
         public async Task SendMessageToWeakReceiver()
         {
-            var sut = new WeakWrapperFactory();
+            var sut = new ConfigureableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
 
             var receiver = Substitute.For<IReceiver<object>>();
             var wrappedReceiver =
                 (sut.CreateWrappedReceiver(receiver, typeof(IReceiver<object>)) as IWrappedReceiver<object>) ??
-                throw new Exception();
+                throw new AssertionException(
+                    $"Wrong Type - an instance of {typeof(IWrappedReceiver<object>)} expected");
 
             Assert.That(wrappedReceiver.IsAlive, Is.True);
             Assert.That(wrappedReceiver.WrappedObject, Is.SameAs(receiver));
@@ -53,11 +54,13 @@ namespace picomessenger.tests.wrapper
         [Test]
         public async Task SendMessageToAsyncWeakReceiver()
         {
-            var sut = new WeakWrapperFactory();
+            var sut = new ConfigureableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
 
             var receiver = Substitute.For<IAsyncReceiver<object>>();
             var wrappedReceiver =
-                sut.CreateWrappedReceiver(receiver, typeof(IAsyncReceiver<object>)) as IWrappedReceiver<object>;
+                (sut.CreateWrappedReceiver(receiver, typeof(IAsyncReceiver<object>)) as IWrappedReceiver<object>) ??
+                throw new AssertionException(
+                    $"Wrong Type - an instance of {typeof(IWrappedReceiver<object>)} expected");
 
             Assert.That(wrappedReceiver, Is.Not.Null);
             Assert.That(wrappedReceiver.IsAlive, Is.True);

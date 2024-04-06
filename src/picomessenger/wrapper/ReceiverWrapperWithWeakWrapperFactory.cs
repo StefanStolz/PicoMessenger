@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 
 namespace picomessenger.wrapper
 {
-    public class WeakWrapperFactory : IReceiverWrapperFactory
+    [Obsolete("Will be removed; use ConfigureableWrapperFactory")]
+    public class ReceiverWrapperWithWeakWrapperFactory : IReceiverWrapperFactory
     {
         public IWrappedReceiver CreateWrappedReceiver(object receiver, Type receiverInterfaceType)
         {

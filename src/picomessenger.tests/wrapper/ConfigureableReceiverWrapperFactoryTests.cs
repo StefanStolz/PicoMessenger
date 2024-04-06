@@ -10,7 +10,7 @@ namespace picomessenger.tests.wrapper
         [TestCase(typeof(IReceiver<string>))]
         public void CreateWrapper(Type receiverType)
         {
-            var sut = new ConfigureableReceiverWrapperFactory();
+            var sut = new ConfigureableReceiverWrapperFactory(false, false, NullPicoLogger.Instance);
 
             var receiver = Substitute.For([receiverType], Array.Empty<object>());
 

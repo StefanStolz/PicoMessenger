@@ -1,12 +1,16 @@
-﻿namespace picomessenger
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+namespace picomessenger
 {
     public interface IPicoLogger
     {
-        void Info(string message);
-        void Warn(string message);
-        void Error(string message);
+        void ReportException(Exception exception, IReceiver receiver);
+        void ReportMessageBlockedToDisabledReceiver(IReceiver receiver);
+        void ReportDisablingReceiver(IReceiver receiver);
     }
 
+    [ExcludeFromCodeCoverage]
     public class NullPicoLogger : IPicoLogger
     {
         public static IPicoLogger Instance { get; } = new NullPicoLogger();
@@ -15,13 +19,13 @@
         private NullPicoLogger()
         { }
 
-        public void Info(string message)
+        public void ReportException(Exception exception, IReceiver receiver)
         { }
 
-        public void Warn(string message)
+        public void ReportMessageBlockedToDisabledReceiver(IReceiver receiver)
         { }
 
-        public void Error(string message)
+        public void ReportDisablingReceiver(IReceiver receiver)
         { }
     }
 }

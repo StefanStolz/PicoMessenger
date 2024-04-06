@@ -36,19 +36,12 @@ namespace picomessenger
 
             public IReceiverWrapperFactory Build()
             {
-                if (this.logger != null)
+                if (this.logger != null || this.disableOnError || this.useWeakReferences)
                 {
-                    throw new NotImplementedException();
-                }
-
-                if (this.disableOnError)
-                {
-                    throw new NotImplementedException();
-                }
-
-                if (this.useWeakReferences)
-                {
-                    throw new NotImplementedException();
+                    return new ConfigureableReceiverWrapperFactory(
+                        this.useWeakReferences, 
+                        this.disableOnError,
+                        this.logger ?? NullPicoLogger.Instance);
                 }
 
                 return new SimpleReceiverWrapperFactory();

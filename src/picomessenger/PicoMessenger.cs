@@ -25,7 +25,7 @@ namespace picomessenger
         public int NumberOfRegisteredReceivers => this.receivers.Length;
 
         /// <inheritdoc />
-        public void Register<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+        public void RegisterSubscriber<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -38,7 +38,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public void Register<T>(IReceiver<T> receiver)
+        public void RegisterSubscriber<T>(IReceiver<T> receiver)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -47,7 +47,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public void Register<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+        public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -59,7 +59,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public void Register<T>(IAsyncReceiver<T> receiver)
+        public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -68,7 +68,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public void Deregister<T>(IReceiver<T> receiver)
+        public void UnregisterSubscriber<T>(IReceiver<T> receiver)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -78,7 +78,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public void Deregister<T>(IAsyncReceiver<T> receiver)
+        public void UnregisterSubscriber<T>(IAsyncReceiver<T> receiver)
         {
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver));
@@ -133,7 +133,7 @@ namespace picomessenger
         }
 
         /// <inheritdoc />
-        public async Task SendMessageAsync<T>(T message)
+        public async Task PublishMessageAsync<T>(T message)
         {
             await Task.WhenAll(
                 this.receivers.Where(r => r.IsAlive)

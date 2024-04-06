@@ -13,14 +13,14 @@ namespace picomessenger
         /// </summary>
         /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
         /// <typeparam name="T">The Type of the Message to receive</typeparam>
-        void Register<T>(IReceiver<T> receiver);
+        void RegisterSubscriber<T>(IReceiver<T> receiver);
         
         /// <summary>
         /// Registers a specific Message Receiver.
         /// </summary>
         /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
         /// <typeparam name="T">The Type of the Message to receive</typeparam>
-        void Register<T>(IAsyncReceiver<T> receiver);
+        void RegisterSubscriber<T>(IAsyncReceiver<T> receiver);
         
         
         /// <summary>
@@ -29,7 +29,7 @@ namespace picomessenger
         /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
         /// <param name="wrapperFactory">The custom <see cref="IReceiverWrapperFactory"/> to use</param>
         /// <typeparam name="T">The Type of the Message to receive</typeparam>
-        void Register<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
+        void RegisterSubscriber<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
         
         /// <summary>
         /// Registers a specific Message Receiver with a custom <see cref="IReceiverWrapperFactory"/>.
@@ -37,21 +37,21 @@ namespace picomessenger
         /// <param name="receiver">An instance of a class receiving <typeparamref name="T"/> Messages</param>
         /// <param name="wrapperFactory">The custom <see cref="IReceiverWrapperFactory"/> to use</param>
         /// <typeparam name="T">The Type of the Message to receive</typeparam>
-        void Register<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
+        void RegisterSubscriber<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory);
         
         /// <summary>
         /// Unregisters an existing Registration of a specific message of an instance.
         /// </summary>
         /// <param name="receiver">The instance that should be unregistered</param>
         /// <typeparam name="T">The Type of the Message that should be unregistered</typeparam>
-        void Deregister<T>(IReceiver<T> receiver);
+        void UnregisterSubscriber<T>(IReceiver<T> receiver);
         
         /// <summary>
         /// Unregisters an existing Registration of a specific message of an instance.
         /// </summary>
         /// <param name="receiver">The instance that should be unregistered</param>
         /// <typeparam name="T">The Type of the Message that should be unregistered</typeparam>
-        void Deregister<T>(IAsyncReceiver<T> receiver);
+        void UnregisterSubscriber<T>(IAsyncReceiver<T> receiver);
 
         /// <summary>
         /// Registers all implemented <see cref="IReceiver{T}"/> and <see cref="IAsyncReceiver{T}"/>
@@ -85,7 +85,7 @@ namespace picomessenger
         /// <param name="message">The Message to send</param>
         /// <typeparam name="T">The Type of the Message</typeparam>
         /// <returns>A Task to await the delivery of the Message to all receivers</returns>
-        Task SendMessageAsync<T>(T message);
+        Task PublishMessageAsync<T>(T message);
     }
 
     /// <summary>
