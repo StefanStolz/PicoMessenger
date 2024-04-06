@@ -1,51 +1,48 @@
 ﻿using System;
+
 using picomessenger.wrapper;
 
 namespace picomessenger
 {
     public class WrapperFactoryBuilder
     {
-        public static Builder Start()
+        public static WrapperFactoryBuilder Start()
         {
-            return new Builder();
+            return new WrapperFactoryBuilder();
         }
 
-        public class Builder
+        private IPicoLogger logger;
+        private bool disableOnError;
+        private bool useWeakReferences;
+
+        public WrapperFactoryBuilder LogErrorsTo(IPicoLogger logger)
         {
-            private IPicoLogger logger;
-            private bool disableOnError;
-            private bool useWeakReferences;
+            this.logger = logger;
+            return this;
+        }
 
-            public Builder LogErrorsTo(IPicoLogger logger)
-            {
-                this.logger = logger;
-                return this;
+        public WrapperFactoryBuilder DisableOnError()
+        {
+            this.disableOnError = true;
+            return this;
+        }
+
+        public WrapperFactoryBuilder UseWeakReferences()
+        {
+            this.useWeakReferences = true;
+            return this;
+        }
+
+        public IReceiverWrapperFactory Build()
+        {
+            if (this.logger != null || this.disableOnError || this.useWeakReferences) {
+                return new ConfigureableReceiverWrapperFactory(
+                    this.useWeakReferences,
+                    this.disableOnError,
+                    this.logger ?? NullPicoLogger.Instance);
             }
 
-            public Builder DisableOnError()
-            {
-                this.disableOnError = true;
-                return this;
-            }
-
-            public Builder UseWeakReferences()
-            {
-                this.useWeakReferences = true;
-                return this;
-            }
-
-            public IReceiverWrapperFactory Build()
-            {
-                if (this.logger != null || this.disableOnError || this.useWeakReferences)
-                {
-                    return new ConfigureableReceiverWrapperFactory(
-                        this.useWeakReferences, 
-                        this.disableOnError,
-                        this.logger ?? NullPicoLogger.Instance);
-                }
-
-                return new SimpleReceiverWrapperFactory();
-            }
+            return new SimpleReceiverWrapperFactory();
         }
     }
 }
