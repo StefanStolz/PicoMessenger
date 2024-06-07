@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace picomessenger.wrapper
 {
-    internal class ConfigureableReceiverWrapperFactory : IReceiverWrapperFactory
+    internal class ConfigurableReceiverWrapperFactory : IReceiverWrapperFactory
     {
         internal bool UseWeakReferences { get; }
 
@@ -12,7 +11,7 @@ namespace picomessenger.wrapper
 
         internal IPicoLogger Logger { get; }
 
-        public ConfigureableReceiverWrapperFactory(bool useWeakReferences, bool disableOnError, IPicoLogger logger)
+        public ConfigurableReceiverWrapperFactory(bool useWeakReferences, bool disableOnError, IPicoLogger logger)
         {
             this.UseWeakReferences = useWeakReferences;
             this.DisableOnError = disableOnError;
@@ -23,7 +22,7 @@ namespace picomessenger.wrapper
         {
             if (receiverInterfaceType.IsGenericType)
             {
-                object configuredReceiver = null;
+                object? configuredReceiver = null;
                 Type[] genericArguments = receiverInterfaceType.GetGenericArguments();
 
                 if (receiverInterfaceType.GetGenericTypeDefinition() == typeof(IAsyncReceiver<>))
@@ -58,8 +57,8 @@ namespace picomessenger.wrapper
                 {
                     Type t = typeof(ConfigureableWrappedReceiverBase<>).MakeGenericType(genericArguments);
 
-                    return (IWrappedReceiver) Activator.CreateInstance(t, this.Logger, this.DisableOnError,
-                        configuredReceiver);
+                    return (IWrappedReceiver)(Activator.CreateInstance(t, this.Logger, this.DisableOnError,
+                        configuredReceiver) ?? throw new CreateWrapperException(t));
                 }
             }
 
@@ -72,7 +71,7 @@ namespace picomessenger.wrapper
 
             bool IsAlive { get; }
 
-            IReceiver WrappedObject { get; }
+            IReceiver? WrappedObject { get; }
         }
 
         private class AsyncConfiguredReceiver<T> : IConfiguredReceiver<T>
@@ -90,7 +89,7 @@ namespace picomessenger.wrapper
             }
 
             public bool IsAlive => true;
-            public IReceiver WrappedObject => this.receiver;
+            public IReceiver? WrappedObject => this.receiver;
         }
 
         private class WeakAsyncReceiver<T> : IConfiguredReceiver<T>
@@ -114,7 +113,7 @@ namespace picomessenger.wrapper
 
             public bool IsAlive => this.weakReceiver.TryGetTarget(out _);
 
-            public IReceiver WrappedObject
+            public IReceiver? WrappedObject
             {
                 get
                 {
@@ -168,7 +167,7 @@ namespace picomessenger.wrapper
 
             public bool IsAlive => this.weakReceiver.TryGetTarget(out _);
 
-            public IReceiver WrappedObject
+            public IReceiver? WrappedObject
             {
                 get
                 {
@@ -204,7 +203,11 @@ namespace picomessenger.wrapper
             {
                 if (this.isDisabledByError && this.disableOnError)
                 {
-                    this.logger.ReportMessageBlockedToDisabledReceiver(this.receiver.WrappedObject);
+                    if (this.receiver.WrappedObject is not null)
+                    {
+                        this.logger.ReportMessageBlockedToDisabledReceiver(this.receiver.WrappedObject);
+                    }
+
                     return;
                 }
 
@@ -217,14 +220,20 @@ namespace picomessenger.wrapper
                     if (this.disableOnError)
                     {
                         this.isDisabledByError = true;
-                        this.logger.ReportDisablingReceiver(this.receiver.WrappedObject);
+                        if (this.receiver.WrappedObject is not null)
+                        {
+                            this.logger.ReportDisablingReceiver(this.receiver.WrappedObject);
+                        }
                     }
 
-                    this.logger.ReportException(exception, this.receiver.WrappedObject);
+                    if (this.receiver.WrappedObject is not null)
+                    {
+                        this.logger.ReportException(exception, this.receiver.WrappedObject);
+                    }
                 }
             }
 
-            public override IReceiver WrappedObject => this.receiver.WrappedObject;
+            public override IReceiver? WrappedObject => this.receiver.WrappedObject;
         }
     }
 }

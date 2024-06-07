@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+<!--    <TargetFramework>netstandard2.0</TargetFramework>-->
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <LangVersion>latest</LangVersion>
     <Title>PicoMessenger</Title>
     <Authors>Stefan Stolz</Authors>
@@ -34,6 +35,10 @@ There are no Dependencies on MVVM Specific Stuff like INotifyPropertyChanged. </
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="PolySharp" Version="1.14.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
   </ItemGroup>
 

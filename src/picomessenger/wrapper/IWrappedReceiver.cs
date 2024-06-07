@@ -7,7 +7,7 @@ namespace picomessenger.wrapper
     {
         bool IsAlive { get; }
         
-        IReceiver WrappedObject { get; }
+        IReceiver? WrappedObject { get; }
 
         Type MessageType { get; }
     }

@@ -102,7 +102,7 @@ namespace picomessenger.tests
         [Test]
         public async Task DisableReceiverAfterException()
         {
-            var sut = new PicoMessenger(new ConfigureableReceiverWrapperFactory(false, true, NullPicoLogger.Instance));
+            var sut = new PicoMessenger(new ConfigurableReceiverWrapperFactory(false, true, NullPicoLogger.Instance));
 
             var receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());

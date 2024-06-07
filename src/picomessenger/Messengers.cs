@@ -18,6 +18,6 @@ namespace picomessenger
         /// Returns a Messenger that uses <see cref="WeakReference{T}"/> to hold the Subscribers
         /// </summary>
         /// <returns>A new instance of <see cref="PicoMessenger"/></returns>
-        public static PicoMessenger WeakMessenger() => new PicoMessenger(new ConfigureableReceiverWrapperFactory(true, false, NullPicoLogger.Instance));
+        public static PicoMessenger WeakMessenger() => new PicoMessenger(new ConfigurableReceiverWrapperFactory(true, false, NullPicoLogger.Instance));
     }
 }

@@ -4,9 +4,9 @@ using picomessenger.wrapper;
 namespace picomessenger
 {
     /// <summary>
-    /// <see cref="ISubscriberRegistration"/> defines methods to register and deregister Message receivers.
+    /// <see cref="IMessageSubscriberRegistry"/> defines methods to register and deregister Message receivers.
     /// </summary>
-    public interface ISubscriberRegistration
+    public interface IMessageSubscriberRegistry
     {
         /// <summary>
         /// Registers a specific Message Receiver.
@@ -91,7 +91,7 @@ namespace picomessenger
     /// <summary>
     /// Defines Methods of a Messenger
     /// </summary>
-    public interface IMessenger : ISubscriberRegistration, IMessagePublisher
+    public interface IMessenger : IMessageSubscriberRegistry, IMessagePublisher
     {
     }
 }

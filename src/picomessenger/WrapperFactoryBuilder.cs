@@ -9,7 +9,7 @@ namespace picomessenger
             return new WrapperFactoryBuilder();
         }
 
-        private IPicoLogger logger;
+        private IPicoLogger? logger;
         private bool disableOnError;
         private bool useWeakReferences;
 
@@ -34,7 +34,7 @@ namespace picomessenger
         public IReceiverWrapperFactory Build()
         {
             if (this.logger != null || this.disableOnError || this.useWeakReferences) {
-                return new ConfigureableReceiverWrapperFactory(
+                return new ConfigurableReceiverWrapperFactory(
                     this.useWeakReferences,
                     this.disableOnError,
                     this.logger ?? NullPicoLogger.Instance);

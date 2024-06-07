@@ -14,7 +14,8 @@ namespace picomessenger.wrapper
                     Type[] genericArguments = receiverInterfaceType.GetGenericArguments();
                     Type t = typeof(AsyncWrappedReceiver<>).MakeGenericType(genericArguments);
 
-                    return (IWrappedReceiver) Activator.CreateInstance(t, receiver);
+                    return (IWrappedReceiver)(Activator.CreateInstance(t, receiver) ??
+                                              throw new CreateWrapperException(t));
                 }
 
                 if (receiverInterfaceType.GetGenericTypeDefinition() == typeof(IReceiver<>))
@@ -22,7 +23,8 @@ namespace picomessenger.wrapper
                     Type[] genericArguments = receiverInterfaceType.GetGenericArguments();
                     Type t = typeof(WrappedReceiver<>).MakeGenericType(genericArguments);
 
-                    return (IWrappedReceiver) Activator.CreateInstance(t, receiver);
+                    return (IWrappedReceiver)(Activator.CreateInstance(t, receiver) ??
+                                              throw new CreateWrapperException(t));
                 }
             }
 

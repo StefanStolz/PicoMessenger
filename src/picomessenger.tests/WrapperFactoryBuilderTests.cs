@@ -21,9 +21,9 @@ namespace picomessenger.tests
             var picoLogger = Substitute.For<IPicoLogger>();
             var sut = WrapperFactoryBuilder.Start().LogErrorsTo(picoLogger);
 
-            var result = (sut.Build() as ConfigureableReceiverWrapperFactory) ??
+            var result = (sut.Build() as ConfigurableReceiverWrapperFactory) ??
                          throw new AssertionException(
-                             $"Result must be of Type {typeof(ConfigureableReceiverWrapperFactory)}");
+                             $"Result must be of Type {typeof(ConfigurableReceiverWrapperFactory)}");
 
             Assert.That(result.Logger, Is.SameAs(picoLogger));
             Assert.That(result.UseWeakReferences, Is.False);
@@ -36,9 +36,9 @@ namespace picomessenger.tests
         {
             var sut = WrapperFactoryBuilder.Start().UseWeakReferences();
 
-            var result = (sut.Build() as ConfigureableReceiverWrapperFactory) ??
+            var result = (sut.Build() as ConfigurableReceiverWrapperFactory) ??
                          throw new AssertionException(
-                             $"Result must be of Type {typeof(ConfigureableReceiverWrapperFactory)}");
+                             $"Result must be of Type {typeof(ConfigurableReceiverWrapperFactory)}");
 
             Assert.That(result.UseWeakReferences, Is.True);
             Assert.That(result.Logger, Is.TypeOf<NullPicoLogger>());
@@ -50,9 +50,9 @@ namespace picomessenger.tests
         {
             var sut = WrapperFactoryBuilder.Start().DisableOnError();
 
-            var result = (sut.Build() as ConfigureableReceiverWrapperFactory) ??
+            var result = (sut.Build() as ConfigurableReceiverWrapperFactory) ??
                          throw new AssertionException(
-                             $"Result must be of Type {typeof(ConfigureableReceiverWrapperFactory)}");
+                             $"Result must be of Type {typeof(ConfigurableReceiverWrapperFactory)}");
 
             Assert.That(result.DisableOnError, Is.True);
             Assert.That(result.UseWeakReferences, Is.False);

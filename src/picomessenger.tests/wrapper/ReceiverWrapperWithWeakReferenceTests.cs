@@ -8,7 +8,7 @@ namespace picomessenger.tests.wrapper
         [Test]
         public async Task SendMessageToWeakReceiver()
         {
-            var sut = new ConfigureableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
+            var sut = new ConfigurableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
 
             var receiver = Substitute.For<IReceiver<object>>();
             var wrappedReceiver =
@@ -54,7 +54,7 @@ namespace picomessenger.tests.wrapper
         [Test]
         public async Task SendMessageToAsyncWeakReceiver()
         {
-            var sut = new ConfigureableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
+            var sut = new ConfigurableReceiverWrapperFactory(true, false, NullPicoLogger.Instance);
 
             var receiver = Substitute.For<IAsyncReceiver<object>>();
             var wrappedReceiver =

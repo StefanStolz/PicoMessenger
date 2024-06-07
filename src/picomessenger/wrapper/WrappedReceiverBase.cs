@@ -19,7 +19,7 @@ namespace picomessenger.wrapper
 
         protected abstract Task SendMessageAsync(T message);
 
-        public abstract IReceiver WrappedObject { get; }
+        public abstract IReceiver? WrappedObject { get; }
 
         public abstract bool IsAlive { get; }
 
