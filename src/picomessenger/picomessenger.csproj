@@ -1,45 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Version>0.1.5</Version>
+        <LangVersion>latest</LangVersion>
+        <Title>PicoMessenger</Title>
+        <Authors>Stefan Stolz</Authors>
+        <RepositoryUrl>https://github.com/StefanStolz/PicoMessenger</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/StefanStolz/PicoMessenger</PackageProjectUrl>
+        <Description>Lightweight Event Aggregator implementation. This software is primarily designed for MVVM applications, but can also be utilized for other purposes.
+            There are no Dependencies on MVVM Specific Stuff like INotifyPropertyChanged.
+        </Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
-<!--    <TargetFramework>netstandard2.0</TargetFramework>-->
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <IncludeSymbols>True</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>0.1.5</Version>
-    <LangVersion>latest</LangVersion>
-    <Title>PicoMessenger</Title>
-    <Authors>Stefan Stolz</Authors>
-    <RepositoryUrl>https://github.com/StefanStolz/PicoMessenger</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/StefanStolz/PicoMessenger</PackageProjectUrl>
-    <Description>Lightweight Event Aggregator implementation. This software is primarily designed for MVVM applications, but can also be utilized for other purposes.
-There are no Dependencies on MVVM Specific Stuff like INotifyPropertyChanged. </Description>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DocumentationFile>bin\Release\picomessenger.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DocumentationFile>bin\Release\picomessenger.xml</DocumentationFile>
-  </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.14.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="PolySharp" Version="1.14.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
+    </ItemGroup>
 
 </Project>

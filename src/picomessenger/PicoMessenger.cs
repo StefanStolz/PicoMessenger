@@ -4,141 +4,157 @@ using System.Linq;
 using System.Threading.Tasks;
 using picomessenger.wrapper;
 
-namespace picomessenger
+namespace picomessenger;
+
+public class PicoMessenger : IMessenger
 {
-    public class PicoMessenger : IMessenger
+    private readonly IReceiverWrapperFactory defaultWrapperFactory;
+    private ImmutableArray<IWrappedReceiver> receivers = ImmutableArray.Create<IWrappedReceiver>();
+
+    public PicoMessenger(IReceiverWrapperFactory receiverDefaultWrapperFactory)
     {
-        private ImmutableArray<IWrappedReceiver> receivers = ImmutableArray.Create<IWrappedReceiver>();
+        this.defaultWrapperFactory = receiverDefaultWrapperFactory ??
+                                     throw new ArgumentNullException(nameof(receiverDefaultWrapperFactory));
+    }
 
-        private readonly IReceiverWrapperFactory defaultWrapperFactory;
+    public PicoMessenger()
+        : this(new SimpleReceiverWrapperFactory())
+    { }
 
-        public PicoMessenger(IReceiverWrapperFactory receiverDefaultWrapperFactory)
+    public int NumberOfRegisteredReceivers => this.receivers.Length;
+
+    /// <inheritdoc />
+    public void RegisterSubscriber<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+    {
+        if (receiver == null)
         {
-            this.defaultWrapperFactory = receiverDefaultWrapperFactory ??
-                                         throw new ArgumentNullException(nameof(receiverDefaultWrapperFactory));
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        public PicoMessenger()
-            : this(new SimpleReceiverWrapperFactory())
-        { }
-
-        public int NumberOfRegisteredReceivers => this.receivers.Length;
-
-        /// <inheritdoc />
-        public void RegisterSubscriber<T>(IReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+        if (wrapperFactory == null)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
-
-            if (wrapperFactory == null)
-                throw new ArgumentNullException(nameof(wrapperFactory));
-
-
-            this.RegisterSingle(receiver, wrapperFactory);
+            throw new ArgumentNullException(nameof(wrapperFactory));
         }
 
-        /// <inheritdoc />
-        public void RegisterSubscriber<T>(IReceiver<T> receiver)
-        {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
 
-            this.RegisterSingle(receiver, this.defaultWrapperFactory);
+        this.RegisterSingle(receiver, wrapperFactory);
+    }
+
+    /// <inheritdoc />
+    public void RegisterSubscriber<T>(IReceiver<T> receiver)
+    {
+        if (receiver == null)
+        {
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        /// <inheritdoc />
-        public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+        this.RegisterSingle(receiver, this.defaultWrapperFactory);
+    }
+
+    /// <inheritdoc />
+    public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver, IReceiverWrapperFactory wrapperFactory)
+    {
+        if (receiver == null)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
-
-            if (wrapperFactory == null)
-                throw new ArgumentNullException(nameof(wrapperFactory));
-
-            this.RegisterSingle(receiver, wrapperFactory);
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        /// <inheritdoc />
-        public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver)
+        if (wrapperFactory == null)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
-
-            this.RegisterSingle(receiver, this.defaultWrapperFactory);
+            throw new ArgumentNullException(nameof(wrapperFactory));
         }
 
-        /// <inheritdoc />
-        public void UnregisterSubscriber<T>(IReceiver<T> receiver)
-        {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+        this.RegisterSingle(receiver, wrapperFactory);
+    }
 
-            this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver) &&
-                                                           x.MessageType == typeof(T));
+    /// <inheritdoc />
+    public void RegisterSubscriber<T>(IAsyncReceiver<T> receiver)
+    {
+        if (receiver == null)
+        {
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        /// <inheritdoc />
-        public void UnregisterSubscriber<T>(IAsyncReceiver<T> receiver)
-        {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+        this.RegisterSingle(receiver, this.defaultWrapperFactory);
+    }
 
-            this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver) &&
-                                                           x.MessageType == typeof(T));
+    /// <inheritdoc />
+    public void UnregisterSubscriber<T>(IReceiver<T> receiver)
+    {
+        if (receiver == null)
+        {
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        private void RegisterSingle<T>(T receiver, IReceiverWrapperFactory wrapperFactory) where T : IReceiver
-        {
-            Type receiverInterfaceType = typeof(T);
-            var wrappedReceiver = wrapperFactory.CreateWrappedReceiver(receiver, receiverInterfaceType);
+        this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver) &&
+                                                       x.MessageType == typeof(T));
+    }
 
-            this.receivers = this.receivers.Add(wrappedReceiver);
+    /// <inheritdoc />
+    public void UnregisterSubscriber<T>(IAsyncReceiver<T> receiver)
+    {
+        if (receiver == null)
+        {
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        /// <inheritdoc />
-        public void RegisterAll(IReceiver receiver)
-        {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+        this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver) &&
+                                                       x.MessageType == typeof(T));
+    }
 
-            this.RegisterAll(receiver, this.defaultWrapperFactory);
+    /// <inheritdoc />
+    public void RegisterAll(IReceiver receiver)
+    {
+        if (receiver == null)
+        {
+            throw new ArgumentNullException(nameof(receiver));
         }
 
-        /// <inheritdoc />
-        public void RegisterAll(IReceiver receiver, IReceiverWrapperFactory wrapperFactory)
+        this.RegisterAll(receiver, this.defaultWrapperFactory);
+    }
+
+    /// <inheritdoc />
+    public void RegisterAll(IReceiver receiver, IReceiverWrapperFactory wrapperFactory)
+    {
+        if (receiver == null)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+            throw new ArgumentNullException(nameof(receiver));
+        }
 
-            if (wrapperFactory == null)
-                throw new ArgumentNullException(nameof(wrapperFactory));
+        if (wrapperFactory == null)
+        {
+            throw new ArgumentNullException(nameof(wrapperFactory));
+        }
 
-            Type[] interfaces = receiver.GetType().GetInterfaces();
+        Type[] interfaces = receiver.GetType().GetInterfaces();
 
-            foreach (Type ifc in interfaces)
+        foreach (Type ifc in interfaces)
+        {
+            if (ifc.IsGenericType && typeof(IReceiver).IsAssignableFrom(ifc))
             {
-                if (ifc.IsGenericType && typeof(IReceiver).IsAssignableFrom(ifc))
-                {
-                    var wrappedReceiver = wrapperFactory.CreateWrappedReceiver(receiver, ifc);
+                IWrappedReceiver wrappedReceiver = wrapperFactory.CreateWrappedReceiver(receiver, ifc);
 
-                    this.receivers = this.receivers.Add(wrappedReceiver);
-                }
+                this.receivers = this.receivers.Add(wrappedReceiver);
             }
         }
+    }
 
-        /// <inheritdoc />
-        public void DeregisterAll(IReceiver receiver)
-        {
-            this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver));
-        }
+    /// <inheritdoc />
+    public void DeregisterAll(IReceiver receiver) =>
+        this.receivers = this.receivers.RemoveAll(x => ReferenceEquals(x.WrappedObject, receiver));
 
-        /// <inheritdoc />
-        public async Task PublishMessageAsync<T>(T message)
-        {
-            await Task.WhenAll(
-                this.receivers.Where(r => r.IsAlive)
-                    .OfType<IWrappedReceiver<T>>()
-                    .Select(r => r.ReceiveAsync(message)));
-        }
+    /// <inheritdoc />
+    public async Task PublishMessageAsync<T>(T message) =>
+        await Task.WhenAll(
+            this.receivers.Where(r => r.IsAlive)
+                .OfType<IWrappedReceiver<T>>()
+                .Select(r => r.ReceiveAsync(message)));
+
+    private void RegisterSingle<T>(T receiver, IReceiverWrapperFactory wrapperFactory) where T : IReceiver
+    {
+        Type receiverInterfaceType = typeof(T);
+        IWrappedReceiver wrappedReceiver = wrapperFactory.CreateWrappedReceiver(receiver, receiverInterfaceType);
+
+        this.receivers = this.receivers.Add(wrappedReceiver);
     }
 }

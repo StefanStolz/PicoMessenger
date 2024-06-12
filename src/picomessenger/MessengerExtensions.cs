@@ -8,7 +8,7 @@ public static class MessengerExtensions
 {
     public static IRegistry Register<T>(this IMessageSubscriberRegistry messenger, Action<T> target)
     {
-        var registry = new Registry(messenger);
+        Registry registry = new Registry(messenger);
 
         registry.Add(target);
 
@@ -17,7 +17,7 @@ public static class MessengerExtensions
 
     public static IRegistry Register<T>(this IMessageSubscriberRegistry messenger, Func<T, Task> target)
     {
-        var registry = new Registry(messenger);
+        Registry registry = new Registry(messenger);
 
         registry.Add(target);
 
@@ -26,7 +26,7 @@ public static class MessengerExtensions
 
     public static IRegistry And<T>(this IRegistry registry, Action<T> target)
     {
-        var r = (Registry)registry;
+        Registry r = (Registry)registry;
 
         r.Add(target);
 
@@ -35,7 +35,7 @@ public static class MessengerExtensions
 
     public static IRegistry And<T>(this IRegistry registry, Func<T, Task> target)
     {
-        var r = (Registry)registry;
+        Registry r = (Registry)registry;
 
         r.Add(target);
 
@@ -52,10 +52,7 @@ internal class GenericReceiver<T> : IReceiver<T>
         this.target = target;
     }
 
-    public void Receive(T message)
-    {
-        this.target(message);
-    }
+    public void Receive(T message) => this.target(message);
 }
 
 internal class Registry : IRegistry
@@ -69,26 +66,26 @@ internal class Registry : IRegistry
         this.messenger = messenger;
     }
 
+    public void Dispose()
+    {
+        foreach (IReceiver? receiver in this.receivers)
+        {
+            this.messenger.DeregisterAll(receiver);
+        }
+    }
+
     public void Add<T>(Action<T> target)
     {
-        var r = new GenericReceiver<T>(target);
+        GenericReceiver<T> r = new GenericReceiver<T>(target);
         this.receivers.Add(r);
         this.messenger.RegisterSubscriber(r);
     }
 
     public void Add<T>(Func<T, Task> target)
     {
-        var r = new GenericAsyncReceiver<T>(target);
+        GenericAsyncReceiver<T> r = new GenericAsyncReceiver<T>(target);
         this.receivers.Add(r);
         this.messenger.RegisterSubscriber(r);
-    }
-
-    public void Dispose()
-    {
-        foreach (var receiver in this.receivers)
-        {
-            this.messenger.DeregisterAll(receiver);
-        }
     }
 }
 
@@ -101,10 +98,7 @@ internal class GenericAsyncReceiver<T> : IAsyncReceiver<T>
         this.target = target;
     }
 
-    public Task ReceiveAsync(T message)
-    {
-        return this.target(message);
-    }
+    public Task ReceiveAsync(T message) => this.target(message);
 }
 
 public interface IRegistry : IDisposable

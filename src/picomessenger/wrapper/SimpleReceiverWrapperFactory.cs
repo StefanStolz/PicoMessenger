@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace picomessenger.wrapper
+namespace picomessenger.wrapper;
+
+public class SimpleReceiverWrapperFactory : IReceiverWrapperFactory
 {
-    public class SimpleReceiverWrapperFactory : IReceiverWrapperFactory
+    public IWrappedReceiver CreateWrappedReceiver(object receiver, Type receiverInterfaceType)
     {
-        public IWrappedReceiver CreateWrappedReceiver(object receiver, Type receiverInterfaceType)
-        {
             if (receiverInterfaceType.IsGenericType)
             {
                 if (receiverInterfaceType.GetGenericTypeDefinition() == typeof(IAsyncReceiver<>))
@@ -31,39 +31,38 @@ namespace picomessenger.wrapper
             throw new ArgumentException("Could not wrap Receiver");
         }
 
-        private sealed class WrappedReceiver<T> : WrappedReceiverBase<T>
-        {
-            private readonly IReceiver<T> receiver;
+    private sealed class WrappedReceiver<T> : WrappedReceiverBase<T>
+    {
+        private readonly IReceiver<T> receiver;
 
-            public WrappedReceiver(IReceiver<T> receiver)
-            {
+        public WrappedReceiver(IReceiver<T> receiver)
+        {
                 this.receiver = receiver;
             }
 
-            public override IReceiver WrappedObject => this.receiver;
+        public override IReceiver WrappedObject => this.receiver;
 
-            public override bool IsAlive { get; } = true;
+        public override bool IsAlive { get; } = true;
 
-            protected override Task SendMessageAsync(T message)
-            {
+        protected override Task SendMessageAsync(T message)
+        {
                 this.receiver.Receive(message);
                 return Task.CompletedTask;
             }
-        }
+    }
 
-        private sealed class AsyncWrappedReceiver<T> : WrappedReceiverBase<T>
+    private sealed class AsyncWrappedReceiver<T> : WrappedReceiverBase<T>
+    {
+        private readonly IAsyncReceiver<T> receiver;
+
+        public AsyncWrappedReceiver(IAsyncReceiver<T> receiver)
         {
-            private readonly IAsyncReceiver<T> receiver;
-
-            public AsyncWrappedReceiver(IAsyncReceiver<T> receiver)
-            {
                 this.receiver = receiver;
             }
 
-            public override IReceiver WrappedObject => this.receiver;
-            public override bool IsAlive { get; } = true;
+        public override IReceiver WrappedObject => this.receiver;
+        public override bool IsAlive { get; } = true;
 
-            protected override Task SendMessageAsync(T message) => this.receiver.ReceiveAsync(message);
-        }
+        protected override Task SendMessageAsync(T message) => this.receiver.ReceiveAsync(message);
     }
 }

@@ -15,40 +15,33 @@ public class RegisterDelegates
         }
 
         public virtual void SomeMessageTarget(SomeMessage m)
-        {
-        }
+        { }
 
-        public virtual Task SomeMessageTargetAsync(SomeMessage m)
-        {
-            return Task.CompletedTask;
-        }
+        public virtual Task SomeMessageTargetAsync(SomeMessage m) => Task.CompletedTask;
 
-        public void ReleaseRegistration()
-        {
-            this.clearRegistration.Dispose();
-        }
+        public void ReleaseRegistration() => this.clearRegistration.Dispose();
     }
 
     [Test]
     public async Task DoRegister()
     {
-        var messenger = new PicoMessenger();
+            PicoMessenger messenger = new PicoMessenger();
 
-        var target = Substitute.ForPartsOf<RegisterDelegatesTestingTarget>(messenger);
+            RegisterDelegatesTestingTarget? target = Substitute.ForPartsOf<RegisterDelegatesTestingTarget>(messenger);
 
-        await messenger.PublishMessageAsync(new SomeMessage());
-        
-        target.Received(1).SomeMessageTarget(Arg.Any<SomeMessage>());
-        await target.Received(1).SomeMessageTargetAsync(Arg.Any<SomeMessage>());
+            await messenger.PublishMessageAsync(new SomeMessage());
 
-        target.ReleaseRegistration();
-        target.ClearReceivedCalls();
-        
-        await messenger.PublishMessageAsync(new SomeMessage());
-        
-        target.DidNotReceive().SomeMessageTarget(Arg.Any<SomeMessage>());
-        await target.DidNotReceive().SomeMessageTargetAsync(Arg.Any<SomeMessage>());
-    }
+            target.Received(1).SomeMessageTarget(Arg.Any<SomeMessage>());
+            await target.Received(1).SomeMessageTargetAsync(Arg.Any<SomeMessage>());
+
+            target.ReleaseRegistration();
+            target.ClearReceivedCalls();
+
+            await messenger.PublishMessageAsync(new SomeMessage());
+
+            target.DidNotReceive().SomeMessageTarget(Arg.Any<SomeMessage>());
+            await target.DidNotReceive().SomeMessageTargetAsync(Arg.Any<SomeMessage>());
+        }
 
     public record SomeMessage;
 }

@@ -1,115 +1,116 @@
 ﻿using NSubstitute.ExceptionExtensions;
 using picomessenger.wrapper;
 
-namespace picomessenger.tests
-{
-    [TestFixture]
-    public class RegisterTests
-    {
-        [Test]
-        public void RegisterSimpleReceiver()
-        {
-            var sut = new PicoMessenger();
+namespace picomessenger.tests;
 
-            var receiverMock = Substitute.For<IReceiver<object>>();
+[TestFixture]
+public class RegisterTests
+{
+    [Test]
+    public void RegisterSimpleReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
+
+            IReceiver<object>? receiverMock = Substitute.For<IReceiver<object>>();
 
             sut.RegisterSubscriber(receiverMock);
 
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(1));
         }
 
-        [Test]
-        public async Task SendMessageToReceiver()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public async Task SendMessageToReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.For<IReceiver<object>>();
+            IReceiver<object>? receiverMock = Substitute.For<IReceiver<object>>();
 
             sut.RegisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             await sut.PublishMessageAsync(message);
 
             receiverMock.Received(1).Receive(message);
         }
 
-        [Test]
-        public async Task SendMessageAsyncToReceiver()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public async Task SendMessageAsyncToReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.For<IAsyncReceiver<object>>();
+            IAsyncReceiver<object>? receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
             sut.RegisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             await sut.PublishMessageAsync(message);
 
             await receiverMock.Received(1).ReceiveAsync(message);
         }
 
-        [Test]
-        public async Task NothingReceivedAfterDeregisterReceiver()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public async Task NothingReceivedAfterDeregisterReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.For<IReceiver<object>>();
+            IReceiver<object>? receiverMock = Substitute.For<IReceiver<object>>();
 
             sut.RegisterSubscriber(receiverMock);
             sut.UnregisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             await sut.PublishMessageAsync(message);
 
             receiverMock.DidNotReceive().Receive(message);
         }
 
-        [Test]
-        public async Task NothingReceivedAfterDeregisterAsyncReceiver()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public async Task NothingReceivedAfterDeregisterAsyncReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.For<IAsyncReceiver<object>>();
+            IAsyncReceiver<object>? receiverMock = Substitute.For<IAsyncReceiver<object>>();
 
             sut.RegisterSubscriber(receiverMock);
             sut.UnregisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             await sut.PublishMessageAsync(message);
 
             await receiverMock.DidNotReceive().ReceiveAsync(message);
         }
 
-        [Test]
-        public void ThrowsException()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public void ThrowsException()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.For<IAsyncReceiver<object>>();
+            IAsyncReceiver<object>? receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
             sut.RegisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             Assert.ThrowsAsync<Exception>(async () => await sut.PublishMessageAsync(message));
         }
 
-        [Test]
-        public async Task DisableReceiverAfterException()
-        {
-            var sut = new PicoMessenger(new ConfigurableReceiverWrapperFactory(false, true, NullPicoLogger.Instance));
+    [Test]
+    public async Task DisableReceiverAfterException()
+    {
+            PicoMessenger sut =
+                new PicoMessenger(new ConfigurableReceiverWrapperFactory(false, true, NullPicoLogger.Instance));
 
-            var receiverMock = Substitute.For<IAsyncReceiver<object>>();
+            IAsyncReceiver<object>? receiverMock = Substitute.For<IAsyncReceiver<object>>();
             receiverMock.ReceiveAsync(Arg.Any<object>()).ThrowsAsync(new Exception());
 
             sut.RegisterSubscriber(receiverMock);
 
-            var message = new object();
+            object message = new object();
 
             await sut.PublishMessageAsync(message);
             await sut.PublishMessageAsync(message);
@@ -117,12 +118,12 @@ namespace picomessenger.tests
             await receiverMock.Received(1).ReceiveAsync(message);
         }
 
-        [Test]
-        public async Task RegisterAll()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public async Task RegisterAll()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
+            MultiReceiver? receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 
             sut.RegisterAll(receiverMock);
 
@@ -134,12 +135,12 @@ namespace picomessenger.tests
             await receiverMock.Received(1).ReceiveAsync(Arg.Any<String>());
         }
 
-        [Test]
-        public void DeregisterAll()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public void DeregisterAll()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
+            MultiReceiver? receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 
             sut.RegisterAll(receiverMock);
             sut.DeregisterAll(receiverMock);
@@ -147,12 +148,12 @@ namespace picomessenger.tests
             Assert.That(sut.NumberOfRegisteredReceivers, Is.EqualTo(0));
         }
 
-        [Test]
-        public void DeregisterOneReceiver()
-        {
-            var sut = new PicoMessenger();
+    [Test]
+    public void DeregisterOneReceiver()
+    {
+            PicoMessenger sut = new PicoMessenger();
 
-            var receiverMock = Substitute.ForPartsOf<MultiReceiver>();
+            MultiReceiver? receiverMock = Substitute.ForPartsOf<MultiReceiver>();
 
             sut.RegisterAll(receiverMock);
 
@@ -162,31 +163,15 @@ namespace picomessenger.tests
         }
 
 
-        [Test]
-        public void RegisterAsyncReceiverWithCustomWrapperFactory()
-        {
-            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
-            var sut = new PicoMessenger(defaultWrapperFactory);
+    [Test]
+    public void RegisterAsyncReceiverWithCustomWrapperFactory()
+    {
+            IReceiverWrapperFactory? defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            PicoMessenger sut = new PicoMessenger(defaultWrapperFactory);
 
-            var receiver = Substitute.For<IAsyncReceiver<string>>();
+            IAsyncReceiver<string>? receiver = Substitute.For<IAsyncReceiver<string>>();
 
-            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
-
-            sut.RegisterSubscriber(receiver, customWrapperFactory);
-
-            defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
-            customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
-        }
-
-        [Test]
-        public void RegisterReceiverWithCustomWrapperFactory()
-        {
-            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
-            var sut = new PicoMessenger(defaultWrapperFactory);
-
-            var receiver = Substitute.For<IReceiver<string>>();
-
-            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            IReceiverWrapperFactory? customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
 
             sut.RegisterSubscriber(receiver, customWrapperFactory);
 
@@ -194,16 +179,32 @@ namespace picomessenger.tests
             customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
         }
 
+    [Test]
+    public void RegisterReceiverWithCustomWrapperFactory()
+    {
+            IReceiverWrapperFactory? defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            PicoMessenger sut = new PicoMessenger(defaultWrapperFactory);
 
-        [Test]
-        public void RegisterallWithCustomWrapperFactory()
-        {
-            var defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
-            var sut = new PicoMessenger(defaultWrapperFactory);
+            IReceiver<string>? receiver = Substitute.For<IReceiver<string>>();
 
-            var receiver = new MultiReceiver();
+            IReceiverWrapperFactory? customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
 
-            var customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            sut.RegisterSubscriber(receiver, customWrapperFactory);
+
+            defaultWrapperFactory.DidNotReceive().CreateWrappedReceiver(Arg.Any<object>(), Arg.Any<Type>());
+            customWrapperFactory.Received(1).CreateWrappedReceiver(receiver, Arg.Any<Type>());
+        }
+
+
+    [Test]
+    public void RegisterallWithCustomWrapperFactory()
+    {
+            IReceiverWrapperFactory? defaultWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
+            PicoMessenger sut = new PicoMessenger(defaultWrapperFactory);
+
+            MultiReceiver receiver = new MultiReceiver();
+
+            IReceiverWrapperFactory? customWrapperFactory = Substitute.For<IReceiverWrapperFactory>();
 
             sut.RegisterAll(receiver, customWrapperFactory);
 
@@ -211,11 +212,10 @@ namespace picomessenger.tests
             customWrapperFactory.Received(2).CreateWrappedReceiver(receiver, Arg.Any<Type>());
         }
 
-        public class MultiReceiver : IAsyncReceiver<object>, IAsyncReceiver<String>
-        {
-            public virtual Task ReceiveAsync(object message) => Task.CompletedTask;
+    public class MultiReceiver : IAsyncReceiver<object>, IAsyncReceiver<String>
+    {
+        public virtual Task ReceiveAsync(object message) => Task.CompletedTask;
 
-            public virtual Task ReceiveAsync(string message) => Task.CompletedTask;
-        }
+        public virtual Task ReceiveAsync(string message) => Task.CompletedTask;
     }
 }

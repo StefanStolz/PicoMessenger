@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace picomessenger.wrapper
+namespace picomessenger.wrapper;
+
+public interface IWrappedReceiver
 {
-    public interface IWrappedReceiver
-    {
-        bool IsAlive { get; }
-        
-        IReceiver? WrappedObject { get; }
+    bool IsAlive { get; }
 
-        Type MessageType { get; }
-    }
+    IReceiver? WrappedObject { get; }
 
-    public interface IWrappedReceiver<T> : IWrappedReceiver
-    {
-        Task ReceiveAsync(T message);
-    }
+    Type MessageType { get; }
+}
+
+public interface IWrappedReceiver<T> : IWrappedReceiver
+{
+    Task ReceiveAsync(T message);
 }
