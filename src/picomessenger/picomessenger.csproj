@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <LangVersion>latest</LangVersion>
     <Title>PicoMessenger</Title>
     <Authors>Stefan Stolz</Authors>
