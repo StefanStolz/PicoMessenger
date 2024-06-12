@@ -1,4 +1,8 @@
-﻿namespace picomessenger;
+﻿#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
+namespace picomessenger;
 
 /// <summary>
 ///     Classes implementing this interface are receiving Messages of the Type <typeparamref name="T" />

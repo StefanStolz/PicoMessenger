@@ -1,3 +1,7 @@
+#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

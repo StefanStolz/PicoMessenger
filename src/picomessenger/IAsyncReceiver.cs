@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
+using System.Threading.Tasks;
 
 namespace picomessenger;
 

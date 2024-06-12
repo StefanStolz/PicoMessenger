@@ -1,4 +1,8 @@
-﻿using picomessenger.wrapper;
+﻿#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
+using picomessenger.wrapper;
 
 namespace picomessenger.tests;
 

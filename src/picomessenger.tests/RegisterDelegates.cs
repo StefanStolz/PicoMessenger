@@ -1,3 +1,7 @@
+#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
 namespace picomessenger.tests;
 
 [TestFixture]

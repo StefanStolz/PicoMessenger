@@ -1,4 +1,8 @@
-﻿using NSubstitute.ExceptionExtensions;
+﻿#region File Header
+// Copyright (c) 2024 Stefan Stolz
+#endregion
+
+using NSubstitute.ExceptionExtensions;
 using picomessenger.wrapper;
 
 namespace picomessenger.tests;
